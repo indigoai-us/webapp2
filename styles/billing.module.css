@@ -1,0 +1,22 @@
+.imageContainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.imageContainer::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, transparent, rgb(21, 21, 26) 55%);
+  mask-composite: exclude;
+  mask-image: radial-gradient(circle, transparent, rgb(21, 21, 26) 55%);
+}
+
+.image {
+  border-top-width: 0px;
+}
