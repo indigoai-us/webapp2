@@ -99,16 +99,17 @@ const MemberDialog = ({submitNewMember, saveExistingMember, selectedMember, hand
                 onChange={(e) => setData({ ...data, [e.target.name]: e.target.value })}
               />
             </fieldset>
-            <fieldset className="mb-[15px] items-center gap-5 mt-4">
-
-              <InputLabel label="Add to Team(s)"/>
-              <ControlledMultiSelect
-                options={teamsOptions}
-                placeholder="Select inputs..."
-                value={data.teams}
-                onChange={(value) => setData({ ...data, teams: value })}
-              />
-            </fieldset>
+            {selectedMember !== 'new' && 
+              <fieldset className="mb-[15px] items-center gap-5 mt-4">
+                <InputLabel label="Add to Team(s)"/>
+                <ControlledMultiSelect
+                  options={teamsOptions}
+                  placeholder="Select inputs..."
+                  value={data.teams}
+                  onChange={(value) => setData({ ...data, teams: value })}
+                />
+              </fieldset>
+            }
             <fieldset className="mb-[15px] items-center gap-5 mt-4">
               <InputLabel label="Member Type"/>
               <SingleSelect
