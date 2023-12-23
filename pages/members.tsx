@@ -11,6 +11,7 @@ import { getAuth } from "@clerk/nextjs/server";
 import useFetch from '@/lib/useFetch';
 import { useAuth, useUser } from '@clerk/nextjs';
 import { useOrganization, clerkClient } from '@clerk/nextjs';
+import Invited from '@/components/members/invited';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	const { userId, getToken } = getAuth(ctx.req);
@@ -40,7 +41,10 @@ export default function Members({company, teams, userAdmin, orgAdmin, clerkUserI
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const router = useRouter();
   const { getToken } = useAuth();
-  const { organization } = useOrganization();
+  const { memberships, organization, invitations } = useOrganization({
+    invitations: true,
+    memberships: true,
+  });
 
   const submitNewMember = async (data: any) => {
 
@@ -64,10 +68,13 @@ export default function Members({company, teams, userAdmin, orgAdmin, clerkUserI
         organizationId: organization?.id, 
         emailAddress: data.email,
         inviterUserId: clerkUserId, 
-        role: data.admin ? 'admin' : 'basic_member', 
+        role: data.admin ? 'org:admin' : 'org:member', 
         redirectUrl: "http://localhost:3000/invite-accepted" 
       })
     });
+
+    console.log('invited user: ', invitedUser);
+    setSelectedMember(null);
 
     // const newTeams = data.teams.map((team: any) => team.value);
     
@@ -102,6 +109,24 @@ export default function Members({company, teams, userAdmin, orgAdmin, clerkUserI
   }
 
   const saveExistingMember = async (data: any) => {
+
+    const numAdmins = members.filter((member: any) => member.admin).length;
+
+    console.log('numAdmins: ', numAdmins);
+    if(data.role !== 'admin' && numAdmins === 1) {
+      toast.error("You must have at least one admin", {
+        autoClose: 2000,
+        theme: 'dark'
+      });
+      return;
+    }    
+
+    console.log('saving member: ', data);
+    const clerkMember = memberships?.data?.find((member: any) => member.publicUserData.userId === data.sub);
+
+    console.log('clerkMember: ', clerkMember);
+    
+    clerkMember?.update({role: data.role === "admin" ? 'org:admin' : 'org:member'});
 
     const newTeams = data.teams.map((team: any) => team.value);
     const newData = {
@@ -142,6 +167,10 @@ export default function Members({company, teams, userAdmin, orgAdmin, clerkUserI
 		});
 
   }
+
+  const handleCancel = async (inv: any) => {
+    await inv.revoke();
+  };
 
   return (
     <Layout>
@@ -188,6 +217,21 @@ export default function Members({company, teams, userAdmin, orgAdmin, clerkUserI
                           data={member}
                           onDelete={handleDelete}
                           handleEditRoute={handleEditRoute}
+                        />
+                      </div>                        
+                    )
+                  })}
+                </div>
+                <div className='flex flex-col divide-y divide-solid divide-zinc-800 mt-4'>
+                  {invitations?.data && invitations?.data.map((member: any, key: number) => {
+                    return (
+                      <div className='flex mb-2' key={key}>
+                        <Invited 
+                          memberName={member.emailAddress} 
+                          memberType={member.role === 'org:member' ? "Member" : "Admin"}
+                          pending={member.status === 'pending'}
+                          data={member}
+                          onCancel={handleCancel}
                         />
                       </div>                        
                     )

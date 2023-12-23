@@ -6,6 +6,8 @@ import { useAppStore } from '@/lib/store'
 import { useEffect, useState } from 'react';
 import SettingsMenu from './SettingsMenu';
 import { useIntercom } from 'react-use-intercom';
+import GemImg from '@/public/512x512.png';
+import Image from 'next/image';
 
 export default function Sidebar (){
   const user = useUser();
@@ -44,7 +46,7 @@ export default function Sidebar (){
 							{/* Logo */}
 							<li className="mb-4">
 								<div className="text-3xl font-bold text-center text-white-700 flex items-center ml-2">
-									<UserButton afterSignOutUrl="/login" />
+									<Image src={GemImg} alt="Indigo" className='w-8 h-8 relative right-1'/>
 									<div className="text-xl ml-2">Indigo</div>
 								</div>
 							</li>

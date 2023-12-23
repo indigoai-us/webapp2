@@ -16,7 +16,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { organization } = useOrganization();
   const { boot } = useIntercom();
 
-  useEffect(() => {    
+  useEffect(() => {
+    console.log('clerkUser: ', clerkUser);
+    
     if(!user && clerkUser && organization) {  
       fetchUserFromDB(clerkUser, organization)
 
