@@ -9,7 +9,7 @@ type DataMenuProps = {
   editRoute?: (data: string) => void;
 };
 
-const dataMenu = (props: DataMenuProps) => {
+const DataMenu = (props: DataMenuProps) => {
   const { id, onDelete, editRoute } = props;
   const [open, setOpen] = useState(false);
 
@@ -64,4 +64,4 @@ const dataMenu = (props: DataMenuProps) => {
   );
 };
 
-export default dataMenu;
+export default DataMenu;

@@ -22,7 +22,7 @@ const AddTeamsDialog = ({teams, submitNewTeams, initialTeams}: any) => {
       setData(newSelectedTeams);  
 
     }
-  }, [initialTeams]);
+  }, [initialTeams, teams]);
 
   useEffect(() => {    
     if(teams) {

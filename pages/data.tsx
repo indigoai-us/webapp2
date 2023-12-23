@@ -11,13 +11,13 @@ import PageTitle from '@/components/pageTitle';
 import MainInput from '@/components/ui/mainInput';
 import { GetServerSideProps } from "next";
 import { getAuth } from "@clerk/nextjs/server";
-import useFetch from '@/lib/useFetch';
 import { useAuth } from '@clerk/nextjs';
+import authedFetch from '@/lib/authedFetch';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { userId, getToken } = getAuth(ctx.req);
  
-	const datasData = await useFetch('/data', 'GET', null, getToken);
+	const datasData = await authedFetch('/data', 'GET', null, getToken);
   const sortedInputs = datasData ? datasData.data.sort((a: any, b: any) => a.name.localeCompare(b.name)) : [];
 
   return { props: { 
@@ -47,7 +47,7 @@ export default function Data({initialData}: any) {
         marketplace: user?.siteAdmin ? true : false,
       }
 
-			const createdData = await useFetch('/data', 'POST', dataData, getToken);
+			const createdData = await authedFetch('/data', 'POST', dataData, getToken);
       console.log('createdData: ', createdData);
 
       const newData = [...data, createdData];
@@ -60,7 +60,7 @@ export default function Data({initialData}: any) {
 
       router.push('/library/data/'+createdData._id);
     },
-    []
+    [data, getToken, router, user?.siteAdmin]
   );
 
   const handleDeleteData = async () => {
@@ -73,7 +73,7 @@ export default function Data({initialData}: any) {
 
 		const deleteData = async () => {
 
-			const deletedData = await useFetch(`/data/${idToBeDeleted}`, 'DELETE', null, getToken);
+			const deletedData = await authedFetch(`/data/${idToBeDeleted}`, 'DELETE', null, getToken);
       console.log('deletedData:', deletedData);
   
       const newData = data.filter((d: any) => d._id !== deletedData._id);

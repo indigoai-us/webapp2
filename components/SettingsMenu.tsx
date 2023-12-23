@@ -1,16 +1,15 @@
-import React, { use } from 'react';
+import React from 'react';
 import {
     DropdownMenu,
     DropdownMenuItem,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdownMenu"
 import { useRouter } from 'next/router';
 import { CogIcon, ArrowLeftOnRectangleIcon, UserIcon, BuildingLibraryIcon, CreditCardIcon, UsersIcon  } from '@heroicons/react/20/solid';
 import { useClerk, useUser } from "@clerk/clerk-react";
+import Image from 'next/image';
 
 const SettingsMenu = ({handleLogout}: any) => {
   const router = useRouter();
@@ -21,8 +20,9 @@ const SettingsMenu = ({handleLogout}: any) => {
     <DropdownMenu>
       <DropdownMenuTrigger className='text-zinc-600 outline-none'>
         {/* <CogIcon width={20} className='text-zinc-600 outline-none'/> */}
-        <img src={user?.imageUrl} 
+        <img src={user ? user.imageUrl : ''} 
           className='w-10 h-10 rounded-full relative left-3 border-gray-500 border hover:border-indigo-500 hover:border-[2px]' 
+          alt="User"
         />        
       </DropdownMenuTrigger>
       <DropdownMenuContent className='border-zinc-800 backdrop-blur-xl py-3 px-3'>

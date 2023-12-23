@@ -19,9 +19,9 @@ const ChooseIcon = ({setSelectedIcon, initialIcon}: any) => {
 
   return (
     <div className="mt-[25px] flex justify-start">
-      {iconSet.map((icon: any) => {
+      {iconSet.map((icon: any, i: number) => {
         return (
-          <div className={`mr-2 cursor-pointer hover:text-yellow-700 ${selected === icon ? 'text-orange-700' : 'text-white-700'}`}>
+          <div key={i} className={`mr-2 cursor-pointer hover:text-yellow-700 ${selected === icon ? 'text-orange-700' : 'text-white-700'}`}>
             <Icon name={icon} onClick={() => handleSelected(icon)}/>
           </div>
         )

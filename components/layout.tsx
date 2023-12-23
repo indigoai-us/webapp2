@@ -27,7 +27,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         userId: clerkUser.id,
       });
     }
-  }, [clerkUser, user, organization])
+  }, [clerkUser, user, organization, boot, fetchUserFromDB])
 
   return (
     <div className={`${inter.className} overscroll-none`}>

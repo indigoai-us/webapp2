@@ -25,7 +25,7 @@ export default function Sidebar (){
       clearUser();
       shutdown();
     }
-  }, [user.isSignedIn]);
+  }, [user.isSignedIn, clearUser, shutdown]);
 
 	const showIntercom = () => {
     // @ts-ignore
@@ -46,7 +46,13 @@ export default function Sidebar (){
 							{/* Logo */}
 							<li className="mb-4">
 								<div className="text-3xl font-bold text-center text-white-700 flex items-center ml-2">
-									<Image src={GemImg} alt="Indigo" className='w-8 h-8 relative right-1'/>
+									<Image 									
+										src={GemImg} 
+										alt="Indigo" 
+										className='w-8 h-8 relative right-1'
+										height={40}
+										width={40}
+									/>
 									<div className="text-xl ml-2">Indigo</div>
 								</div>
 							</li>

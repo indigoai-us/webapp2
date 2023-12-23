@@ -8,7 +8,7 @@ type InputMenuProps = {
   editRoute?: (input: object) => void;
 };
 
-const memberMenu = (props: InputMenuProps) => {
+const MemberMenu = (props: InputMenuProps) => {
   const { data, onDelete, editRoute } = props;
   const [bookmarksChecked, setBookmarksChecked] = React.useState(true);
   const [urlsChecked, setUrlsChecked] = React.useState(false);
@@ -58,4 +58,4 @@ const memberMenu = (props: InputMenuProps) => {
   );
 };
 
-export default memberMenu;
+export default MemberMenu;

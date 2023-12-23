@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch"
 import DataDialog from '@/components/dialogs/dataDialog';
 import { toast } from 'react-toastify';
 import { useAuth } from "@clerk/nextjs";
-import useFetch from '@/lib/useFetch';
+import authedFetch from '@/lib/authedFetch';
 
 const PromptStep = ({updatePromptData, initialData, dataData, models}: any) => {
   const [showSystemMessage, setShowSystemMessage] = useState(true);
@@ -44,7 +44,7 @@ const PromptStep = ({updatePromptData, initialData, dataData, models}: any) => {
   useEffect(() => {
     const {rawPromptFrame} = initialData;
     setPrompt(rawPromptFrame);
-  },[]);
+  },[initialData]);
 
   useEffect(() => {
     const newData = dataData.map((d: any) => {
@@ -75,7 +75,7 @@ const PromptStep = ({updatePromptData, initialData, dataData, models}: any) => {
     if(localData.tokens > max_tokens) {
       setLocalData({...localData, tokens: max_tokens});
     }    
-  }, [localData]);
+  }, [localData, modelOptions]);
 
   const handlePromptChange = (event: any, newValue: any, newPlainTextValue: any) => {
     
@@ -138,7 +138,7 @@ const PromptStep = ({updatePromptData, initialData, dataData, models}: any) => {
     }
 
     const createData = async () => {
-      const createdData = await useFetch('/data', 'POST', dataData, getToken);
+      const createdData = await authedFetch('/data', 'POST', dataData, getToken);
       console.log('got companies:', createdData);   
   
       const formattedData = {

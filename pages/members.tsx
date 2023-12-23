@@ -8,23 +8,23 @@ import MainButton from '@/components/ui/mainButton';
 import { toast } from 'react-toastify';
 import { GetServerSideProps } from "next";
 import { getAuth } from "@clerk/nextjs/server";
-import useFetch from '@/lib/useFetch';
 import { useAuth, useUser } from '@clerk/nextjs';
 import { useOrganization, clerkClient } from '@clerk/nextjs';
 import Invited from '@/components/members/invited';
+import authedFetch from '@/lib/authedFetch';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	const { userId, getToken } = getAuth(ctx.req);
 	
-	const userData = await useFetch(`/users?sub=${userId}`, 'GET', null, getToken);
+	const userData = await authedFetch(`/users?sub=${userId}`, 'GET', null, getToken);
   
   const userAdmin = userData?.data[0]?.siteAdmin;
 	const orgAdmin = userData?.data[0]?.admin;
 	const companyId = userData?.data[0]?.company?._id;
 
-	const companyData = companyId ? await useFetch('/companies/'+companyId, 'GET', null, getToken) : null;
+	const companyData = companyId ? await authedFetch('/companies/'+companyId, 'GET', null, getToken) : null;
 	
-	const teamsData = await useFetch('/teams', 'GET', null, getToken);
+	const teamsData = await authedFetch('/teams', 'GET', null, getToken);
 
 	return { props: { 
     company: companyData ? companyData.data : {},
@@ -86,7 +86,7 @@ export default function Members({company, teams, userAdmin, orgAdmin, clerkUserI
     //   admin: data.admin,
     // }
     
-    // const createdMember = await useFetch(`/users`, 'POST', newUser, getToken);
+    // const createdMember = await authedFetch(`/users`, 'POST', newUser, getToken);
 
     // const companyUserIds = company.users.map((user: any) => user._id);
     // const createdMemberId = createdMember._id;
@@ -101,7 +101,7 @@ export default function Members({company, teams, userAdmin, orgAdmin, clerkUserI
 
     // delete newCompany._id;    
 
-    // const updatedCompany = await useFetch(`/companies/${company._id}`, 'PUT', newCompany, getToken);
+    // const updatedCompany = await authedFetch(`/companies/${company._id}`, 'PUT', newCompany, getToken);
 
     // setMembers([...company.users, createdMember]);
     // setSelectedMember(null);
@@ -134,7 +134,7 @@ export default function Members({company, teams, userAdmin, orgAdmin, clerkUserI
       teams: newTeams
     }
 
-    const updatedMember = await useFetch(`/users/${data._id}`, 'PUT', newData, getToken);
+    const updatedMember = await authedFetch(`/users/${data._id}`, 'PUT', newData, getToken);
 
     const updatedMembers = members.map((member: any) => {
       if(member._id === data._id) {
@@ -154,7 +154,7 @@ export default function Members({company, teams, userAdmin, orgAdmin, clerkUserI
   const handleDelete = async (data: any) => {
     console.log('deleting member: ', data._id);
     
-    const deletedUser = await useFetch(`/users/${data._id}`, 'DELETE', {query: data}, getToken);
+    const deletedUser = await authedFetch(`/users/${data._id}`, 'DELETE', {query: data}, getToken);
 
     const updatedMembers = members.filter((member: any) => member._id !== data._id);
 

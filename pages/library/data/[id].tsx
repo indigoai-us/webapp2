@@ -7,7 +7,7 @@ import Textarea from '@/components/ui/textarea';
 import EditableInput from '@/components/elements/editableInput';
 import { useRouter } from 'next/router';
 import { useAuth } from '@clerk/nextjs';
-import useFetch from '@/lib/useFetch';
+import authedFetch from '@/lib/authedFetch';
 
 const dataOptions = [
   { value: 'input1', label: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
@@ -37,13 +37,13 @@ export default function DataDetail() {
     const getData = async () => {
       // Fetch data from server
 
-			const results = await useFetch(`/data/${id}`, 'GET', null, getToken);
+			const results = await authedFetch(`/data/${id}`, 'GET', null, getToken);
 
       setData(results);
     }
 
     id && getData();
-  },[id]);
+  },[id, getToken]);
 
   const submitData = useCallback(
     async () => {
@@ -61,7 +61,19 @@ export default function DataDetail() {
         setInProgress(false);
       }
     },
-    [options]
+    []
+  );
+
+  const handleUpdateData = useCallback(
+    async (newData: any) => {
+      console.log('Update data.', newData);
+
+			const response = await authedFetch(`/data/${newData._id}`, 'PUT', newData, getToken);
+      console.log('handleUpdateInput response:', response);
+
+      setData(response);
+    },
+    [getToken]
   );
 
   const handleAddOption = useCallback(
@@ -72,7 +84,7 @@ export default function DataDetail() {
         value: newValue
       }
 
-			const responseData = await useFetch(`/datavalues`, 'POST', newDataValue, getToken);
+			const responseData = await authedFetch(`/datavalues`, 'POST', newDataValue, getToken);
 
       console.log('responseData:', responseData);
 
@@ -87,7 +99,7 @@ export default function DataDetail() {
       setNewValue('');
 
     },
-    [data, newValue]
+    [data, newValue, getToken, handleUpdateData]
   );
 
   const handleUpdateOption = useCallback(
@@ -125,7 +137,7 @@ export default function DataDetail() {
       await handleUpdateData(newInput);
 
     },
-    [data]
+    [data, handleUpdateData]
   );
 
   const handleRemoveOption = useCallback(
@@ -136,7 +148,7 @@ export default function DataDetail() {
       // Make sure optionToRemove has an _id property
       const optionId = '_id' in optionToRemove ? optionToRemove._id : '';
 
-			const deletedOption = await useFetch(`/datavalues/${optionId}`, 'DELETE', null, getToken);
+			const deletedOption = await authedFetch(`/datavalues/${optionId}`, 'DELETE', null, getToken);
 
       const newOptions = data.options.filter((option, i) => i !== index);
 
@@ -152,7 +164,7 @@ export default function DataDetail() {
       await handleUpdateData(newInput);
       
     },
-    [data]
+    [data, getToken, handleUpdateData]
   );
 
   const handleUpdateName = (index: number, text: string) => {
@@ -192,18 +204,6 @@ export default function DataDetail() {
     handleUpdateData(newData);
 
   }
-
-  const handleUpdateData = useCallback(
-    async (newData: any) => {
-      console.log('Update data.', newData);
-
-			const response = await useFetch(`/data/${newData._id}`, 'PUT', newData, getToken);
-      console.log('handleUpdateInput response:', response);
-
-      setData(response);
-    },
-    [data]
-  );
   
 
   return (

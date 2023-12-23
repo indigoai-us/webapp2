@@ -7,7 +7,7 @@ const TeamsEmpty = () => {
       
       <h1 className='text-4xl mt-8'>Uh oh! No teams?!?!</h1>
       <div className='text-8xl mt-4'>🤔</div>
-      <h2 className='text-xl mt-4'>I think it's time to figure this one out...</h2>
+      <h2 className='text-xl mt-4'>{`I think it's time to figure this one out...`}</h2>
       <div className='items-start'>
         <div className='text-2xl mt-8'>
           Here are some things you can do:

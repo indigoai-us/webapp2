@@ -2,6 +2,7 @@ import MainButton from '@/components/ui/mainButton';
 import MainInput from '@/components/ui/mainInput';
 import { useAppStore } from '@/lib/store';
 import { CreateOrganization, useUser } from '@clerk/nextjs'
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -97,7 +98,7 @@ export default function SignUpStep1() {
       {/* Logo header */}
       <div className="grow-0 h-auto">
         <h1 className="text-3xl font-bold text-white-700 flex items-center relative right-1">
-          <img src="/512x512.png" width="40" />
+          <Image src="/512x512.png" width="40" alt="Indigo" />
           <div className="text-5xl ml-3 relative bottom-1">Indigo</div>
         </h1>
       </div>
