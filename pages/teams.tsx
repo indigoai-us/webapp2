@@ -11,13 +11,13 @@ import CommandsEmpty from '@/components/empty-state/commandsEmpty';
 import CommandCard from '@/components/commands/commandCard';
 import { GetServerSideProps } from "next";
 import { getAuth } from "@clerk/nextjs/server";
-import useFetch from '@/lib/useFetch';
 import { useAuth } from "@clerk/nextjs";
+import authedFetch from '@/lib/authedFetch';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { userId, getToken } = getAuth(ctx.req);
  
-	const userData = await useFetch(`/users?sub=${userId}`, 'GET', null, getToken);
+	const userData = await authedFetch(`/users?sub=${userId}`, 'GET', null, getToken);
   
   const userAdmin = userData?.data[0]?.admin;
     
@@ -27,9 +27,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
 	const companyId = userData?.data[0]?.company?._id;
 
-	const companyData = companyId ? await useFetch('/companies/'+companyId, 'GET', null, getToken) : null;
+	const companyData = companyId ? await authedFetch('/companies/'+companyId, 'GET', null, getToken) : null;
 	
-	const teamsData = await useFetch('/teams', 'GET', null, getToken);
+	const teamsData = await authedFetch('/teams', 'GET', null, getToken);
   
   return { props: { 
     sub: userId,
@@ -60,7 +60,7 @@ export default function Teams({company, sub, teamsData, userAdmin}: any) {
       icon: data.icon
     }
 
-    const createdTeam = await useFetch('/teams', 'POST', newTeam, getToken);
+    const createdTeam = await authedFetch('/teams', 'POST', newTeam, getToken);
     
     setTeams([...teams, createdTeam]);
     setSelectedTeam(null);
@@ -75,7 +75,7 @@ export default function Teams({company, sub, teamsData, userAdmin}: any) {
       users: userIds
     }
 
-    const updatedTeam = await useFetch(`/teams/${data._id}`, 'PUT', newData, getToken);
+    const updatedTeam = await authedFetch(`/teams/${data._id}`, 'PUT', newData, getToken);
 
     const updatedMembers = teams.map((team: any) => {
       if(team._id === updatedTeam._id) {
@@ -127,9 +127,9 @@ export default function Teams({company, sub, teamsData, userAdmin}: any) {
                     <TeamsEmpty />
                     :
                     <div className='flex flex-col divide-y divide-solid divide-zinc-800 mt-4'>
-                      {teams.map((team: any) => {
+                      {teams.map((team: any, i: number) => {
                         return (
-                          <div className='flex mb-2 pt-2'>
+                          <div className='flex mb-2 pt-2' key={i}>
                             <Team 
                               name={team.icon ? team.icon : 'Users'} 
                               teamName={team.name} 

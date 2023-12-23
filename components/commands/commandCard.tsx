@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { ChatBubbleLeftRightIcon, ClipboardDocumentIcon, EyeIcon } from '@heroicons/react/20/solid';
-import useFetch from "@/lib/useFetch";
 import { useAuth } from "@clerk/nextjs";
+import authedFetch from "@/lib/authedFetch";
 
 interface CommandCardProps {
   command: any;
@@ -35,12 +35,12 @@ const CommandCard: React.FC<CommandCardProps> = ({ command, userAdmin }) => {
         [update.field]: update.value,
       }            
 
-      const data = await useFetch(`/commands/${newCommand._id}`, 'PUT', newCommand, getToken);
+      const data = await authedFetch(`/commands/${newCommand._id}`, 'PUT', newCommand, getToken);
       console.log('handleUpdateCommand data:', data);   
 
       setCommandData(newCommand);
     },
-    [command]
+    [command, getToken]
   );
 
   const handleRoute = () => {

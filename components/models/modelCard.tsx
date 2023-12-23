@@ -1,4 +1,5 @@
 import { Switch } from "@/components/ui/switch"
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 interface ModelCardProps {
@@ -30,7 +31,13 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, handleUpdateModel, selectM
         
         
         <span className="flex flex-row w-[220px] mr-2">
-          <img src={modelData.icon} className="w-6 h-6 rounded-full" alt="Icon" />
+          <Image 
+            src={modelData.icon} 
+            className="w-6 h-6 rounded-full" 
+            alt="Icon" 
+            height={40}
+            width={40}
+            />
           <h3 className="my-1 text-sm ml-2">{modelData.name}</h3>
         </span>
         <span className="text-gray-500 w-[120px] mr-2 ">

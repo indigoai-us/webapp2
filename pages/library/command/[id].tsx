@@ -15,8 +15,8 @@ import { toast } from 'react-toastify';
 import ChoiceDialog from '@/components/dialogs/choiceDialog';
 import { getAuth } from "@clerk/nextjs/server";
 import { GetServerSideProps } from "next";
-import useFetch from '@/lib/useFetch';
 import { useAuth } from "@clerk/nextjs";
+import authedFetch from '@/lib/authedFetch';
 
 const emptyCommand = {
 	id: '',
@@ -38,22 +38,22 @@ const emptyCommand = {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	const { userId, getToken } = getAuth(ctx.req);
 	
-	const userData = await useFetch(`/users?sub=${userId}`, 'GET', null, getToken);
+	const userData = await authedFetch(`/users?sub=${userId}`, 'GET', null, getToken);
   
 	const orgAdmin = userData?.data[0]?.admin;
 	const companyId = userData?.data[0]?.company?._id;
 
-	const companyData = companyId ? await useFetch('/companies/'+companyId, 'GET', null, getToken) : null;
+	const companyData = companyId ? await authedFetch('/companies/'+companyId, 'GET', null, getToken) : null;
 	
-	const dataData = await useFetch('/data', 'GET', null, getToken);
+	const dataData = await authedFetch('/data', 'GET', null, getToken);
 
-	const teamsData = await useFetch('/teams', 'GET', null, getToken);
+	const teamsData = await authedFetch('/teams', 'GET', null, getToken);
 
 	const { id } = ctx.query;
 
-	const commandData = id === 'new' ? emptyCommand : await useFetch('/commands/'+id, 'GET', null, getToken);
+	const commandData = id === 'new' ? emptyCommand : await authedFetch('/commands/'+id, 'GET', null, getToken);
 
-	const modelsData = await useFetch('/models', 'GET', null, getToken);
+	const modelsData = await authedFetch('/models', 'GET', null, getToken);
 
 	return { props: { 
 		user: userData ? userData.data[0] : {},
@@ -129,7 +129,7 @@ export default function EditCommand({user, data, teams, company, commandData, mo
 				users: [user._id],
 			}
 
-			const createdCommand = await useFetch('/commands', 'POST', newCommand, getToken);
+			const createdCommand = await authedFetch('/commands', 'POST', newCommand, getToken);
 
 			console.log('createdCommand: ', createdCommand);
 			
@@ -137,7 +137,7 @@ export default function EditCommand({user, data, teams, company, commandData, mo
 
 		} else {
 
-			const putCommand = await useFetch('/commands/'+id, 'PATCH', command, getToken);
+			const putCommand = await authedFetch('/commands/'+id, 'PATCH', command, getToken);
 
 			router.push('/');
 
@@ -156,7 +156,7 @@ export default function EditCommand({user, data, teams, company, commandData, mo
 		
 	const handleDelete =async () => {
 		
-		const deletedCommand = await useFetch('/commands/'+id, 'DELETE', null, getToken);
+		const deletedCommand = await authedFetch('/commands/'+id, 'DELETE', null, getToken);
 
 		toast.success("Command successfully deleted", {
 			autoClose: 2000,
@@ -272,10 +272,10 @@ export default function EditCommand({user, data, teams, company, commandData, mo
                     <h5 className='text-xs text-slate-500'>Teams</h5>
                 </div>
                 <div className="flex flex-none flex-col">
-									{command.teams?.map((team: any) => {
+									{command.teams?.map((team: any, i: number) => {
 										const teamData = teams.find((t: any) => t._id === team);
 										return (
-											<div className='flex mb-2'>
+											<div className='flex mb-2' key={i}>
 												<div><Icon name={teamData.icon ? teamData.icon : 'Megaphone'} size={14}/></div>
 												<div className="text-xs text-white ml-3">{teamData.name}</div>
 											</div>

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, {useState, useEffect} from 'react';
 import Select, { components } from 'react-select';
 
@@ -14,10 +15,12 @@ const IconOption = (props: any) => (
   <Option {...props}>
     <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
       {props.data.icon && 
-        <img
+        <Image
           src={props.data.icon}
           style={{ width: 18, marginRight: 10 }}
           alt={props.data.label}
+          height={40}
+          width={40}
         />    
       }
       <div style={{position: 'relative', top: 1}}>
@@ -34,10 +37,12 @@ const SingleValue = ({ ...props }: any) => {
       <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
         <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
           {props.data.icon && 
-            <img
+            <Image
               src={props.data.icon}
               style={{ width: 18, marginRight: 10 }}
               alt={props.data.label}
+              height={40}
+              width={40}
             />    
           }
           <div style={{position: 'relative', top: 1}}>

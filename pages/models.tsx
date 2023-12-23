@@ -10,13 +10,14 @@ import MainInput from '@/components/ui/mainInput';
 import { useAppStore } from '@/lib/store';
 import { GetServerSideProps } from "next";
 import { getAuth } from "@clerk/nextjs/server";
-import useFetch from '@/lib/useFetch';
 import { useAuth } from '@clerk/nextjs';
+import authedFetch from '@/lib/authedFetch';
+import Image from 'next/image';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { userId, getToken } = getAuth(ctx.req);
  
-	const modelsData = await useFetch('/models', 'GET', null, getToken);
+	const modelsData = await authedFetch('/models', 'GET', null, getToken);
 
   return { props: { 
     initialModels: modelsData ? modelsData.data : [],
@@ -35,7 +36,7 @@ export default function Models(
 
     const patchModel = async() => {
 
-			await useFetch(`/models/${model._id}`, 'PATCH', body, getToken);
+			await authedFetch(`/models/${model._id}`, 'PATCH', body, getToken);
 
       const newModel = {
         ...model,
@@ -84,7 +85,7 @@ export default function Models(
   const updateGlobalModels = async() => {
     console.log('updating global models');
 
-    const updatedGlobal = await useFetch(`/models/1`, 'PUT', { updateGlobal: true }, getToken);
+    const updatedGlobal = await authedFetch(`/models/1`, 'PUT', { updateGlobal: true }, getToken);
     console.log('updatedGlobal: ', updatedGlobal);
     
   }
@@ -152,7 +153,13 @@ export default function Models(
             <div className="flex-col pl-6 pr-6">
 
               <div className="mt-2 mb-4" style={{display: 'flex', flexDirection: 'row'}}>
-                <img src={selectedModel.icon} className="w-6 h-6 rounded-full" alt="Icon" />
+                <Image 
+                  src={selectedModel.icon} 
+                  className="w-6 h-6 rounded-full" 
+                  alt="Icon" 
+                  height={24}
+                  width={24}
+                  />
                 <h3 className="my-1 text-sm ml-2">{selectedModel.name}</h3>
               </div>
 

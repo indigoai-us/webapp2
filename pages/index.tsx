@@ -10,15 +10,15 @@ import { useAppStore } from '@/lib/store';
 import { PlusIcon } from '@heroicons/react/20/solid';
 import CommandsEmpty from '@/components/empty-state/commandsEmpty';
 import CommandCard from '@/components/commands/commandCard';
-import useFetch from '@/lib/useFetch';
+import authedFetch from '@/lib/authedFetch';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { userId, getToken } = getAuth(ctx.req);
  
-  const gotCompanies = await useFetch('/companies', 'GET', null, getToken);
+  const gotCompanies = await authedFetch('/companies', 'GET', null, getToken);
   console.log('got companies:', gotCompanies);  
 
-  const gotCommands = await useFetch('/commands', 'GET', null, getToken);
+  const gotCommands = await authedFetch('/commands', 'GET', null, getToken);
   console.log('got commands:', gotCommands);  
   
   return { props: { companies: gotCompanies.data, commands: gotCommands.data } };

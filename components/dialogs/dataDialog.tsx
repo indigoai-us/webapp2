@@ -21,6 +21,11 @@ const DataDialog = (props: DataValueProps) => {
     open && setLocalOpen(open);
   }, [open]);
 
+  const handleClose = () => {
+    setLocalOpen(false);
+    setClose && setClose();
+  }
+  
   const handleAddData = useCallback(
     async () => {
       console.log('handleAddData data');
@@ -35,17 +40,11 @@ const DataDialog = (props: DataValueProps) => {
       };
 
       addData && addData(newData);
-      handleClose();
+      setLocalOpen(false);
+      setClose && setClose();
     },
-    [addData, name]
+    [addData, name, setClose, setLocalOpen]
   );
-
-  const handleClose = () => {
-    setLocalOpen(false);
-    setClose && setClose();
-  }
-
-
   
   return (
     <Dialog.Root open={localOpen}>

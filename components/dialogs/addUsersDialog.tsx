@@ -21,7 +21,7 @@ const AddUsersDialog = ({users, submitNewUsers, initialUsers}: any) => {
       }).filter((user: any) => user !== null);
       setData(newSelectedUsers);      
     }
-  }, [initialUsers]);
+  }, [initialUsers, users]);
 
   useEffect(() => {    
     if(users) {      

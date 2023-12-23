@@ -45,7 +45,7 @@ const MemberDialog = ({submitNewMember, saveExistingMember, selectedMember, hand
       })
       setData({...selectedMember, teams: selectedMemberTeams});
     }
-  }, [selectedMember]);
+  }, [selectedMember, teams]);
 
   useEffect(() => {    
     if(teams) {

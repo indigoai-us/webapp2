@@ -13,7 +13,12 @@ export default function Billing() {
               <PageTitle title="Billing"/>
                 <div className='py-4 '>
                   <div className={styles.imageContainer}>
-                      <Image src={ComingSoonImg} alt="Coming Soon" width={800} />
+                      <Image 
+                        src={ComingSoonImg} 
+                        alt="Coming Soon" 
+                        width={800} 
+                        height={800}
+                        />
                   </div>
                 </div>
             </div>
