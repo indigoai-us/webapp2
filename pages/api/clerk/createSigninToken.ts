@@ -14,10 +14,7 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
 
-  try {
-
-    console.log('req.body', req.body);
-    console.log('process.env.CLERK_SECRET_KEY', process.env.CLERK_SECRET_KEY);    
+  try {  
 
     const getResponse = await fetch(`https://api.clerk.com/v1/sign_in_tokens`, {
       method: 'POST',

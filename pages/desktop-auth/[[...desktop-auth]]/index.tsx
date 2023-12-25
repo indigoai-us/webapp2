@@ -8,12 +8,14 @@ export default function DesktopAuth() {
   const { user: clerkUser, isLoaded } = useUser();
   const [ userLoggedIn, setUserLoggedIn ] = useState(true);
   const [signInToken, setSignInToken] = useState<any>(null);
+  const [generatingSignInToken, setGeneratingSignInToken] = useState(false);
 
   useEffect(() => {
     if(isLoaded) {
       if(clerkUser) {
         console.log('loaded clerk user: ', clerkUser); 
         const generateSigninToken = async () => {
+          setGeneratingSignInToken(true);
           const bodyObj = {
             "user_id": clerkUser.id,
             "expires_in_seconds": 2592000
@@ -59,6 +61,12 @@ export default function DesktopAuth() {
           signUpUrl="/sign-up" 
           afterSignInUrl="/desktop-auth/finishing"
           />
+      }
+      {generatingSignInToken && !signInToken &&
+        <span className="mt-4">Finishing...</span>
+      }
+      {generatingSignInToken && signInToken &&
+        <span className="mt-4">Success! Click the button below to return to Indigo.</span>
       }
       {signInToken &&
         <Button

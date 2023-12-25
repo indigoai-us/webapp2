@@ -37,7 +37,7 @@ export default function DesktopAuthFinishing() {
   }, [clerkUser]);  
   
   return (
-    <div className="flex flex-col p-2 h-screen bg-zinc-900">
+    <main className="flex flex-col h-screen justify-center items-center">
       {/* Logo header */}
       <div className="grow-0 h-auto">
         <h1 className="text-3xl font-bold text-white-700 flex items-center relative right-1">
@@ -46,7 +46,11 @@ export default function DesktopAuthFinishing() {
         </h1>
       </div>
 
-      Finishing...
+      {!signInToken ?
+        <span className="mt-4">Finishing...</span>
+        :
+        <span className="mt-4">Success! Click the button below to return to Indigo.</span>
+      }
 
       {signInToken &&
         <Button
@@ -58,6 +62,6 @@ export default function DesktopAuthFinishing() {
       }
 
       <div className="grow-0 h-[150px]"></div>
-    </div>
+    </main>
   )
 }
