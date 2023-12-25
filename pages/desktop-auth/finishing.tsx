@@ -26,7 +26,6 @@ export default function DesktopAuthFinishing() {
           body: JSON.stringify(bodyObj)
         });
         const signInToken = await getResponse.json(); 
-        console.log('signInToken: ', signInToken.response);
         
         setSignInToken(signInToken.response.token);
 
