@@ -11,6 +11,7 @@ import { PlusIcon } from '@heroicons/react/20/solid';
 import CommandsEmpty from '@/components/empty-state/commandsEmpty';
 import CommandCard from '@/components/commands/commandCard';
 import authedFetch from '@/lib/authedFetch';
+import { GridIcon, LayoutGridIcon, LayoutPanelTop, ToyBrickIcon } from 'lucide-react';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { userId, getToken } = getAuth(ctx.req);
@@ -27,17 +28,27 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 export default function Home(props: any) {
   const { companies, commands } = props;
   // const { getToken } = useAuth();
-  const { user } = useAppStore()
+  const { user, updateUser } = useAppStore()
   const [localUser, setLocalUser] = useState<any>(null);
   const [localCommands, setLocalCommands] = useState<any>(null);
+  const [layoutStyle, setLayoutStyle] = useState<any>('masonry');
 
   useEffect(() => {
     setLocalUser(user);
+    console.log('user layoutStyle: ', user?.layoutStyle);
+    
+    if(user?.layoutStyle) {
+      setLayoutStyle(user.layoutStyle);
+    }
   }, [user])
 
   useEffect(() => {
     setLocalCommands(commands);
   }, [commands])
+
+  const handleLayoutStyle = async (style: string) => {
+    updateUser({...user, layoutStyle: style})
+  }
 
   // const getCompanies = async () => {
   //   const getResponse = await fetch(`http://localhost:8080/companies`, {
@@ -51,12 +62,6 @@ export default function Home(props: any) {
   //   console.log('client side got companies:', gotData);  
   // }
 
-  useEffect(() => {
-    console.log('companies: ', companies);
-    console.log('commands: ', commands);
-    // getCompanies();    
-  }, [companies, commands])
-
   return (
     <Layout>
       <main className="w-3/4 md:w-4/5 lg:w-5/6 bg-zinc-950">
@@ -67,7 +72,7 @@ export default function Home(props: any) {
               <div>
                 <PageTitle title="Commands"/>
               </div>
-              <div className="flex flex-grow justify-end p-4 mr-2 space-x-2">
+              <div className="flex flex-grow justify-end p-4 mr-2 space-x-2 items-center">
                 {/* {user?.admin &&
                   <Link href="/marketplace">
                     <MainButton color='grey' textSize='text-sm'  href="/marketplace" icon={<img src="/gem-100.png" width={"15px"} alt="Icon" />}>
@@ -75,6 +80,17 @@ export default function Home(props: any) {
                     </MainButton>
                   </Link>
                 } */}
+                {layoutStyle === 'masonry' ?
+                  <LayoutGridIcon 
+                    className={`w-8 h-8 cursor-pointer text-indigo-100 mr-4`} 
+                    onClick={() => handleLayoutStyle('grid')}
+                    />
+                  :
+                  <LayoutPanelTop
+                    className={`w-8 h-8 cursor-pointer text-indigo-100 mr-4`} 
+                    onClick={() => handleLayoutStyle('masonry')}
+                    />
+                }
                 {localUser?.admin &&
                   <Link href="/library/command/new">
                     <MainButton textSize='text-sm' icon={ <PlusIcon className="w-5 group-hover:w-7 group-hover:transition-all" />}>
@@ -129,15 +145,36 @@ export default function Home(props: any) {
             {localCommands?.length === 0 ?
               <CommandsEmpty />
               :
-              <div className="grid grid-cols-3 gap-4 px-6 mb-6">
-                {localCommands?.map((command: any, key: number) => (
-                  <CommandCard 
-                    key={key}
-                    command={command}
-                    userAdmin={user?.admin}
-                  />
-                ))}
-              </div>
+              <>
+                {layoutStyle === 'grid' ?
+                  <div className="grid grid-cols-3 gap-4 px-6 mb-6">
+                    {localCommands?.map((command: any, key: number) => (
+                      <CommandCard 
+                        key={key}
+                        command={command}
+                        userAdmin={user?.admin}
+                      />
+                    ))}
+                  </div>
+                  :
+                  <div className="grid grid-flow-row-dense grid-cols-12 gap-4">
+                    {localCommands?.map((command: any, key: number) => {
+                      return (
+                        <div className={`${(key>3 && key<7) ? 'col-span-4' : 'col-span-3'}`}>
+                          <div className={`h-56`}>
+                            <CommandCard 
+                              key={key}
+                              command={command}
+                              userAdmin={user?.admin}
+                              tile={true}
+                            />
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                }
+              </>
             }
           
           </div>

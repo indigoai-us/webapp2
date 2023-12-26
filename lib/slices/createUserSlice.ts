@@ -14,6 +14,7 @@ export interface User {
   };
   admin: boolean;
   siteAdmin: boolean;
+  layoutStyle: string;
 }
 
 export interface UserSlice {
@@ -28,6 +29,8 @@ export const createUserSlice: StateCreator<UserSlice> = (set) => ({
     fetchUserFromDB: async (clerkUser: any, organization: any) => {
       const response = await fetch(`/api/users/get?sub=${clerkUser.id}`);
       const user = await response.json();
+      console.log('fetchUserFromDB user: ', user);
+      
       const coResponse = await fetch(`/api/companies/get?sub=${organization.id}`);
       const company = await coResponse.json();
       
