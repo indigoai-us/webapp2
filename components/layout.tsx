@@ -18,6 +18,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   useEffect(() => {
     console.log('clerkUser: ', clerkUser);
+    console.log('user: ', user);
+    console.log('organization: ', organization);    
     
     if(!user && clerkUser && organization) {  
       fetchUserFromDB(clerkUser, organization)
