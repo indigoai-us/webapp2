@@ -12,17 +12,22 @@ import CommandsEmpty from '@/components/empty-state/commandsEmpty';
 import CommandCard from '@/components/commands/commandCard';
 import authedFetch from '@/lib/authedFetch';
 import { GridIcon, LayoutGridIcon, LayoutPanelTop, ToyBrickIcon } from 'lucide-react';
+import { useAuth } from '@clerk/nextjs';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { userId, getToken } = getAuth(ctx.req);
  
   const gotCompanies = await authedFetch('/companies', 'GET', null, getToken);
-  console.log('got companies:', gotCompanies);  
+  console.log('got companies:', gotCompanies.data.length);  
 
+  let commands = [];
   const gotCommands = await authedFetch('/commands', 'GET', null, getToken);
-  console.log('got commands:', gotCommands);  
+  if(gotCommands.code !== 500) {
+    commands = gotCommands.data;
+  }
+  console.log('got commands:', gotCommands.data.length);  
   
-  return { props: { companies: gotCompanies.data, commands: gotCommands.data } };
+  return { props: { companies: gotCompanies.data, commands } };
 };
 
 export default function Home(props: any) {
@@ -30,25 +35,35 @@ export default function Home(props: any) {
   // const { getToken } = useAuth();
   const { user, updateUser } = useAppStore()
   const [localUser, setLocalUser] = useState<any>(null);
-  const [localCommands, setLocalCommands] = useState<any>(null);
-  const [layoutStyle, setLayoutStyle] = useState<any>('masonry');
+  const [localCommands, setLocalCommands] = useState<any>([]);
+  const [layoutStyle, setLayoutStyle] = useState<any>('grid');
+  const {getToken} = useAuth();
 
   useEffect(() => {
     setLocalUser(user);
-    console.log('user layoutStyle: ', user?.layoutStyle);
-    
-    if(user?.layoutStyle) {
-      setLayoutStyle(user.layoutStyle);
+    if(commands.length===0) {
+      const getCommands = async () => {
+        const clientSideCommands = await authedFetch(`/commands`, 'GET', null, getToken);
+        console.log('client side commands: ', clientSideCommands);
+        if(clientSideCommands?.data?.length > 0) {
+          setLocalCommands(clientSideCommands.data);
+        } else {
+          console.log('no commands found');          
+        }
+      }
+      getCommands();
     }
   }, [user])
 
   useEffect(() => {
+    console.log('commands: ', commands);
+    
     setLocalCommands(commands);
   }, [commands])
 
-  const handleLayoutStyle = async (style: string) => {
-    updateUser({...user, layoutStyle: style})
-  }
+  // const handleLayoutStyle = async (style: string) => {
+  //   updateUser({...user, layoutStyle: style})
+  // }
 
   // const getCompanies = async () => {
   //   const getResponse = await fetch(`http://localhost:8080/companies`, {
@@ -80,7 +95,7 @@ export default function Home(props: any) {
                     </MainButton>
                   </Link>
                 } */}
-                {layoutStyle === 'masonry' ?
+                {/* {layoutStyle === 'masonry' ?
                   <LayoutGridIcon 
                     className={`w-8 h-8 cursor-pointer text-indigo-100 mr-4`} 
                     onClick={() => handleLayoutStyle('grid')}
@@ -90,7 +105,7 @@ export default function Home(props: any) {
                     className={`w-8 h-8 cursor-pointer text-indigo-100 mr-4`} 
                     onClick={() => handleLayoutStyle('masonry')}
                     />
-                }
+                } */}
                 {localUser?.admin &&
                   <Link href="/library/command/new">
                     <MainButton textSize='text-sm' icon={ <PlusIcon className="w-5 group-hover:w-7 group-hover:transition-all" />}>

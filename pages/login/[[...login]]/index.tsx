@@ -14,7 +14,13 @@ export default function Login() {
         />
         <div className="text-5xl ml-3 relative bottom-1">Indigo</div>
       </h1>
-      <SignIn path="/login" routing="path" signUpUrl="/sign-up" />
+      <SignIn
+        path="/login" 
+        routing="path"
+        afterSignInUrl="/"
+        signUpUrl="/sign-up" 
+        afterSignUpUrl="/sign-up/create-organization" 
+        />
     </main>
   )
 }
